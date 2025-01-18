@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Printami in 3D - Il tuo negozio di stampa 3D</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1d4ed8;
+            --accent-color: #60a5fa;
+            --text-color: #333;
+            --bg-color: #f8fafc;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-menu a:hover {
+            color: var(--primary-color);
+        }
+
+        .hero {
+            padding-top: 80px;
+            min-height: 600px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #1e3a8a;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #475569;
+            margin-bottom: 2rem;
+        }
+
+        .cta-button {
+            padding: 1rem 2rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .products {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 2rem 1rem;
+        }
+
+        .products h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #1e3a8a;
+            font-size: 2.5rem;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            object-fit: contain;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #1e3a8a;
+        }
+
+        .product-description {
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .buy-button {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .buy-button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1001;
+            padding: 2rem;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .cart-items {
+            max-height: calc(100vh - 250px);
+            overflow-y: auto;
+            margin-bottom: 2rem;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .cart-total {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .contact-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .contact-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .success-message {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            animation: fadeIn 0.3s ease-out;
+            z-index: 1002;
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .cart-modal {
+                width: 100%;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .customize-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .customize-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .color-option {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .color-option:hover {
+            background-color: #f1f5f9;
+        }
+
+        .color-preview {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 1rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .dimension-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .dimension-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .dimension-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+
+        .dimension-info {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .quantity-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quantity-group button {
+            width: 36px;
+            height: 36px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quantity-group button:hover {
+            background: #f1f5f9;
+        }
+
+        .quantity-group input {
+            width: 60px;
+            text-align: center;
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+        }
+
+        .select-wrapper {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .select-wrapper select {
+            width: 100%;
+            padding: 0.8rem;
+            padding-right: 2rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            appearance: none;
+            background: white;
+            cursor: pointer;
+        }
+
+        .select-wrapper::after {
+            content: '▼';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #64748b;
+        }
+
+        .select-wrapper {
+            position: relative;
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
+
+        .custom-select {
+            position: relative;
+            width: 100%;
+        }
+
+        .select-header {
+            padding: 0.8rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .select-header::after {
+            content: '▼';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #64748b;
+        }
+
+        .color-preview {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #e2e8f0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .select-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            margin-top: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .option-item {
+            padding: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-item:hover {
+            background-color: #f8fafc;
+        }
+
+        .option-item.selected {
+            background-color: #f1f5f9;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-cube"></i>
+                Printami in 3D
+            </a>
+            <div class="nav-menu">
+                <a href="#hero"><i class="fas fa-home"></i> Home</a>
+                <a href="#products"><i class="fas fa-store"></i> Prodotti</a>
+                <a href="#" id="contact-btn"><i class="fas fa-envelope"></i> Contattaci</a>
+                <a href="#" id="cart-btn"><i class="fas fa-shopping-cart"></i> Carrello</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <h1>Dai vita alle tue idee con la stampa 3D</h1>
+            <p>Scopri la nostra collezione di oggetti unici stampati in 3D, personalizzabili e realizzati con materiali di alta qualità.</p>
+            <button class="cta-button" onclick="scrollToProducts()">Esplora la Collezione</button>
+        </div>
+    </section>
+
+    <section class="products" id="products">
+        <h2>I Nostri Prodotti in Evidenza</h2>
+        <div class="product-grid">
+            <div class="product-card">
+                <img src="image/object/vaso.png" alt="Vaso Design" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Vaso Design Moderno</h3>
+                    <p class="product-description">Vaso geometrico stampato in 3D con finitura premium</p>
+                    <p class="product-price">€19.00</p>
+                    <button class="buy-button" onclick="openCustomize('Vaso Design Moderno', 29.99, 20)">
+                        <i class="fas fa-shopping-cart"></i> Personalizza e Acquista
+                    </button>
+                </div>
+            </div>
+            <div class="product-card">
+                <img src="image/object/lampada.png" alt="Lampada" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Lampada Artistica</h3>
+                    <p class="product-description">Lampada da tavolo con pattern organico</p>
+                    <p class="product-price">€29.00</p>
+                    <button class="buy-button" onclick="openCustomize('Lampada Artistica', 29.99, 20)">
+                        <i class="fas fa-shopping-cart"></i> Personalizza e Acquista
+                    </button>
+                </div>
+            </div>
+            <div class="product-card">
+                <img src="image/object/portachiavi.png" alt="Portachiavi" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Portachiavi Squid Game</h3>
+                    <p class="product-description">Portachiavi della tua serie Preferita</p>
+                    <p class="product-price">€24.00</p>
+                    <button class="buy-button" onclick="openCustomize('Portachiavi', 29.99, 20)">
+                        <i class="fas fa-shopping-cart"></i> Personalizza e Acquista
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="customize-modal" id="customize-modal">
+        <div class="customize-form">
+            <div class="cart-header">
+                <h2>Personalizza il tuo prodotto</h2>
+                <button class="close-btn" onclick="closeCustomize()">&times;</button>
+            </div>
+            <form id="customize-form" onsubmit="handleCustomization(event)">
+                <input type="hidden" id="product-name">
+                <input type="hidden" id="product-base-price">
+                <input type="hidden" id="product-base-size">
+                
+                <div class="dimension-group">
+                    <label for="length">Lunghezza desiderata (cm):</label>
+                    <input type="number" id="length" min="1" required step="0.1">
+                    <p class="dimension-info">Dimensione originale: <span id="original-size">20</span>cm</p>
+                </div>
+    
+                <div class="quantity-group">
+                    <label>Quantità:</label>
+                    <button type="button" onclick="decrementQuantity()">-</button>
+                    <input type="number" id="quantity" value="1" min="1" required>
+                    <button type="button" onclick="incrementQuantity()">+</button>
+                </div>
+    
+                <div class="select-wrapper">
+                    <label for="color">Seleziona il colore:</label>
+                    <div class="custom-select" id="custom-select">
+                        <div class="select-header" id="select-header">
+                            <div class="color-preview"></div>
+                            <span>Seleziona un colore</span>
+                        </div>
+                        <div class="select-options" id="select-options">
+                            <div class="option-item" data-value="White" data-image="image/color/bianco.png">
+                                <div class="color-preview" style="background-image: url('image/color/bianco.png')"></div>
+                                <span>Bianco</span>
+                            </div>
+                            <div class="option-item" data-value="yellow" data-image="image/color/giallo.png">
+                                <div class="color-preview" style="background-image: url('image/color/giallo.png')"></div>
+                                <span>Giallo</span>
+                            </div>
+                            <div class="option-item" data-value="Orange" data-image="image/color/arancione.png">
+                                <div class="color-preview" style="background-image: url('image/color/arancione.png')"></div>
+                                <span>Arancione</span>
+                            </div>
+                            <div class="option-item" data-value="red" data-image="image/color/rosso.png">
+                                <div class="color-preview" style="background-image: url('image/color/rosso.png')"></div>
+                                <span>Rosso</span>
+                            </div>
+                            <div class="option-item" data-value="pink" data-image="image/color/rosa.png">
+                                <div class="color-preview" style="background-image: url('image/color/rosa.png')"></div>
+                                <span>Rosa</span>
+                            </div>
+                            <div class="option-item" data-value="purple" data-image="image/color/viola.png">
+                                <div class="color-preview" style="background-image: url('image/color/viola.png')"></div>
+                                <span>Viola</span>
+                            </div>
+                            <div class="option-item" data-value="blue" data-image="image/color/blue.png">
+                                <div class="color-preview" style="background-image: url('image/color/blu.png')"></div>
+                                <span>Blu</span>
+                            </div>
+                            <div class="option-item" data-value="skyblue" data-image="image/color/azzurro.png">
+                                <div class="color-preview" style="background-image: url('image/color/azzurro.png')"></div>
+                                <span>Azzurro</span>
+                            </div>
+                            <div class="option-item" data-value="green" data-image="image/color/verde.png">
+                                <div class="color-preview" style="background-image: url('image/color/verde.png')"></div>
+                                <span>Verde</span>
+                            </div>
+                            <div class="option-item" data-value="Black" data-image="image/color/nero.png">
+                                <div class="color-preview" style="background-image: url('image/color/nero.png')"></div>
+                                <span>Nero</span>
+                            </div>
+                        </div>
+                        <input type="hidden" id="color" name="color" required>
+                    </div>
+                </div>
+    
+                <button type="submit" class="cta-button">
+                    <i class="fas fa-shopping-cart"></i> Aggiungi al Carrello
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    
+    <div class="cart-modal" id="cart-modal">
+        <div class="cart-header">
+            <h2>Il tuo carrello</h2>
+            <button class="close-btn" onclick="closeCart()">&times;</button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <!-- Items del carrello verranno inseriti qui dinamicamente -->
+        </div>
+        <div class="cart-total">
+            <h3>Totale: <span id="cart-total">€0.00</span></h3>
+            <button class="cta-button" onclick="checkout()">Procedi all'acquisto</button>
+        </div>
+    </div>
+
+    <div class="contact-modal" id="contact-modal">
+        <div class="contact-form">
+            <div class="cart-header">
+                <h2>Contattaci</h2>
+                <button class="close-btn" onclick="closeContact()">&times;</button>
+            </div>
+            <form id="contact-form" onsubmit="submitForm(event)">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Messaggio:</label>
+                    <textarea id="message" required></textarea>
+                </div>
+                <button type="submit" class="cta-button">
+                    <i class="fas fa-paper-plane"></i> Invia Messaggio
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="success-message" id="success-message">
+        Messaggio inviato con successo!
+    </div>
+
+    <script>
+        let cart = [];
+        let total = 0;
+
+        // Gestione del carrello
+        function openCart() {
+            document.getElementById('cart-modal').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+            updateCart();
+        }
+
+        function closeCart() {
+            document.getElementById('cart-modal').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            total += price;
+            showSuccess('Prodotto aggiunto al carrello!');
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            
+            cartItems.innerHTML = '';
+            cart.forEach(item => {
+                cartItems.innerHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <h4>${item.name}</h4>
+                            <p>€${item.price.toFixed(2)}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            cartTotal.textContent = `€${total.toFixed(2)}`;
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                showSuccess('Il carrello è vuoto!');
+                return;
+            }
+            cart = [];
+            total = 0;
+            updateCart();
+            closeCart();
+            showSuccess('Ordine completato con successo!');
+        }
+
+        // Gestione del form di contatto
+        function openContact() {
+            document.getElementById('contact-modal').style.display = 'flex';
+        }
+
+        function closeContact() {
+            document.getElementById('contact-modal').style.display = 'none';
+        }
+
+        // Smooth scroll alle sezioni
+        function scrollToProducts() {
+            document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Gestione form di contatto
+        function submitForm(event) {
+            event.preventDefault();
+            
+            // Simulazione invio form
+            showSuccess('Messaggio inviato con successo!');
+            
+            // Chiudi il form
+            closeContact();
+            
+            // Reset del form
+            event.target.reset();
+        }
+
+        // Funzione per mostrare messaggi di successo
+        function showSuccess(message) {
+            const successMessage = document.getElementById('success-message');
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+
+        // Event listeners
+        document.getElementById('cart-btn').addEventListener('click', openCart);
+        document.getElementById('contact-btn').addEventListener('click', openContact);
+
+        // Chiusura dei modali cliccando fuori
+        document.getElementById('overlay').addEventListener('click', closeCart);
+        document.getElementById('contact-modal').addEventListener('click', (event) => {
+            if (event.target === document.getElementById('contact-modal')) {
+                closeContact();
+            }
+        });
+
+        let currentProduct = null;
+
+        function openCustomize(name, price, baseSize) {
+            currentProduct = { name, price, baseSize };
+            document.getElementById('customize-modal').style.display = 'flex';
+            document.getElementById('product-name').value = name;
+            document.getElementById('product-base-price').value = price;
+            document.getElementById('product-base-size').value = baseSize;
+            document.getElementById('original-size').textContent = baseSize;
+        }
+
+        function closeCustomize() {
+            document.getElementById('customize-modal').style.display = 'none';
+            currentProduct = null;
+        }
+
+        function incrementQuantity() {
+            const input = document.getElementById('quantity');
+            input.value = parseInt(input.value) + 1;
+        }
+
+        function decrementQuantity() {
+            const input = document.getElementById('quantity');
+            if (parseInt(input.value) > 1) {
+                input.value = parseInt(input.value) - 1;
+            }
+        }
+
+        function handleCustomization(event) {
+            event.preventDefault();
+            
+            const length = parseFloat(document.getElementById('length').value);
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const color = document.getElementById('color').value;
+            const baseSize = parseFloat(currentProduct.baseSize);
+            
+            // Calcola il prezzo in base alle dimensioni
+            const scaleFactor = length / baseSize;
+            const adjustedPrice = currentProduct.price * scaleFactor;
+            const totalPrice = adjustedPrice * quantity;
+            
+            // Aggiungi al carrello con le personalizzazioni
+            cart.push({
+                name: `${currentProduct.name} (${length}cm, ${color})`,
+                price: adjustedPrice,
+                quantity: quantity,
+                color: color,
+                dimensions: `${length}cm`
+            });
+            
+            total += totalPrice;
+            
+            // Chiudi il modale e mostra il messaggio di successo
+            closeCustomize();
+            showSuccess('Prodotto personalizzato aggiunto al carrello!');
+            updateCart();
+        }
+
+        // Aggiorna la funzione updateCart per mostrare i dettagli personalizzati
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            
+            cartItems.innerHTML = '';
+            cart.forEach(item => {
+                cartItems.innerHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <h4>${item.name}</h4>
+                            <p>Quantità: ${item.quantity}</p>
+                            <p>Colore: ${item.color}</p>
+                            <p>Dimensioni: ${item.dimensions}</p>
+                            <p>€${(item.price * item.quantity).toFixed(2)}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            cartTotal.textContent = `€${total.toFixed(2)}`;
+        }
+
+        // Chiusura del modale di personalizzazione cliccando fuori
+        document.getElementById('customize-modal').addEventListener('click', (event) => {
+            if (event.target === document.getElementById('customize-modal')) {
+                closeCustomize();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectHeader = document.getElementById('select-header');
+            const selectOptions = document.getElementById('select-options');
+            const hiddenInput = document.getElementById('color');
+            let isOpen = false;
+
+            // Funzione per aprire/chiudere il select
+            function toggleSelect() {
+                isOpen = !isOpen;
+                selectOptions.style.display = isOpen ? 'block' : 'none';
+            }
+
+            // Gestione click sul header del select
+            selectHeader.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleSelect();
+            });
+
+            // Gestione selezione opzione
+            document.querySelectorAll('.option-item').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const value = option.getAttribute('data-value');
+                    const imageUrl = option.getAttribute('data-image');
+                    const text = option.querySelector('span').textContent;
+
+                    // Aggiorna l'header del select
+                    selectHeader.innerHTML = `
+                        <div class="color-preview" style="background-image: url('${imageUrl}')"></div>
+                        <span>${text}</span>
+                    `;
+
+                    // Aggiorna il valore dell'input nascosto
+                    hiddenInput.value = value;
+
+                    // Chiudi il select
+                    toggleSelect();
+
+                    // Rimuovi la classe selected da tutte le opzioni
+                    document.querySelectorAll('.option-item').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+
+                    // Aggiungi la classe selected all'opzione selezionata
+                    option.classList.add('selected');
+                });
+            });
+
+            // Chiudi il select quando si clicca fuori
+            document.addEventListener('click', () => {
+                if (isOpen) {
+                    toggleSelect();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+                
